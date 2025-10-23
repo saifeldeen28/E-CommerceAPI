@@ -19,6 +19,9 @@ namespace Service
                 .ForMember(dist=>dist.PictureUrl,options=>options.MapFrom<PictureUrlResolver>());
             CreateMap<ProductType,TypeDto>();
             CreateMap<ProductBrand, BrandDto>();
+
+            CreateMap<CustomerBasket, BasketDto>().ReverseMap();
+            CreateMap<BasketItem, BasketItemDto>().ReverseMap();
         }
     }
 }

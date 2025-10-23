@@ -6,6 +6,7 @@ using Persistance.DataSeed;
 using Persistance.Repositories;
 using Service;
 using ServiceAbstraction;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(x=>x.AddProfile(new MappingProfiles()));
 builder.Services.AddScoped<IServiceManger, ServiceManger>();
 builder.Services.AddTransient<Service.PictureUrlResolver>();
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
+    var configuration = builder.Configuration.GetConnectionString("RedisConnection");
+    return ConnectionMultiplexer.Connect(configuration);
+});
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
