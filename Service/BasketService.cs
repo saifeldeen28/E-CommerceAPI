@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Service
 {
-    public class BusketService(IBasketRepository _basketRepository, IMapper _mapper) : IBasketServices
+    public class BasketService(IBasketRepository _basketRepository, IMapper _mapper) : IBasketServices
     {
         public async Task<BasketDto?> CreateOrUpdateBasketAsync(BasketDto basket)
         {
