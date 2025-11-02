@@ -1,4 +1,5 @@
-﻿using DomainLayer.Exceptions;
+﻿using Azure;
+using DomainLayer.Exceptions;
 using Shared;
 using System.Text.Json;
 
@@ -18,8 +19,13 @@ namespace E_CommerceAPI.CustomMiddleWares
         {
             try
             {
-                await _next.Invoke(context);
-                await HandleNotFoundEndPoint(context);
+                await _next(context);
+
+                if (!context.Response.HasStarted && context.Response.StatusCode == StatusCodes.Status404NotFound)
+                {
+                    await HandleNotFoundEndPoint(context);
+                }
+
             }
             catch (Exception ex)
             {
@@ -30,18 +36,24 @@ namespace E_CommerceAPI.CustomMiddleWares
 
         private static async Task HandleExceptionsAsync(HttpContext context, Exception ex)
         {
-            context.Response.StatusCode = ex switch
-            {
-                NotFoundException => StatusCodes.Status404NotFound,
-                _ => StatusCodes.Status500InternalServerError
-            };
-            context.Response.ContentType = "application/json";
             var res = new ErrorToReturn()
             {
-                StatusCode = context.Response.StatusCode,
                 ErrorMessage = ex.Message
             };
+            res.StatusCode = ex switch
+            {
+                NotFoundException => StatusCodes.Status404NotFound,
+                BadRequestException badRequestException => GetBadRequestErrors(badRequestException, res),
+                _ => StatusCodes.Status500InternalServerError
+            };
+            
             await context.Response.WriteAsJsonAsync(res);
+        }
+
+        private static int GetBadRequestErrors(BadRequestException badRequestException, ErrorToReturn res)
+        {
+            res.Errors = badRequestException.Errors;
+            return StatusCodes.Status400BadRequest;
         }
 
         private static async Task HandleNotFoundEndPoint(HttpContext context)
