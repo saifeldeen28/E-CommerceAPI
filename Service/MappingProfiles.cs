@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DomainLayer.Models;
 using Shared.Dtos;
+using Shared.Dtos.Identity_dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace Service
 
             CreateMap<CustomerBasket, BasketDto>().ReverseMap();
             CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+            CreateMap<Address, AddressDto>().ReverseMap();
         }
     }
 }

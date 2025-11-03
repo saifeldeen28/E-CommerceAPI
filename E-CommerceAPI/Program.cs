@@ -1,6 +1,7 @@
 using DomainLayer.Contracts;
 using DomainLayer.Models;
 using E_CommerceAPI.CustomMiddleWares;
+using E_CommerceAPI.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +59,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
         return new BadRequestObjectResult(errorResponse);
     };
 });
+builder.Services.AddJWTServices(builder.Configuration);
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
@@ -75,6 +77,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();
 
 app.UseAuthorization();
 
