@@ -54,6 +54,20 @@ namespace Persistance.DataSeed
                 }
                 await _dBContext.SaveChangesAsync();
             }
+            if (!_dBContext.DeliveryMethods.Any())
+            {
+                var ProductsData = File.OpenRead(@"../Infrastructure/Persistance/DataSeed/delivery.json");
+                var Products = await JsonSerializer.DeserializeAsync<List<DeliveryMethod>>(ProductsData);
+                if (Products is not null && Products.Any())
+                {
+                    foreach (var item in Products)
+                    {
+                        _dBContext.DeliveryMethods.Add(item);
+                    }
+                }
+
+                await _dBContext.SaveChangesAsync();
+            }
         }
 
         public async Task IdentityDataSeedAsync()
