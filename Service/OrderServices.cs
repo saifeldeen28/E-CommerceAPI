@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿ using AutoMapper;
 using DomainLayer.Contracts;
 using DomainLayer.Exceptions;
 using DomainLayer.Models;
+using Microsoft.AspNetCore.Authorization;
+using Service.Specifications;
 using Shared.Dtos.Order_Dtos;
 using System;
 using System.Collections.Generic;
@@ -45,6 +47,27 @@ namespace Service
             await _unitOfWork.GetRepository<Order,Guid>().AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<Order,OrderToReturnDto>(order);
+        }
+
+        public async Task<IEnumerable<DeliveryMethodDto>> GetAllDeliveryMethodsAsync()
+        {
+            var methods =await _unitOfWork.GetRepository<DeliveryMethod, int>().GetAllAsync();
+            return _mapper.Map<IEnumerable<DeliveryMethod>, IEnumerable<DeliveryMethodDto>>(methods);
+        }
+
+        public async Task<IEnumerable<OrderToReturnDto>> GetAllOrdersAsync(string email)
+        {
+            var spec = new OrderSpecifications(email);
+            var orders =await _unitOfWork.GetRepository<Order, Guid>().GetAllAsync(spec);
+            return _mapper.Map<IEnumerable<Order>, IEnumerable<OrderToReturnDto>>(orders); 
+        }
+
+        public async Task<OrderToReturnDto> GetOrderByIdAsync(Guid id)
+        {
+            var spec = new OrderSpecifications(id);
+            var order = await _unitOfWork.GetRepository<Order, Guid>().GetByIdAsync(spec);
+            return _mapper.Map<OrderToReturnDto>(order);
+
         }
     }
 }

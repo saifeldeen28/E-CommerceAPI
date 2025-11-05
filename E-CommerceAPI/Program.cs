@@ -37,6 +37,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(x=>x.AddProfile(new MappingProfiles()));
 builder.Services.AddScoped<IServiceManger, ServiceManger>();
 builder.Services.AddTransient<Service.PictureUrlResolver>();
+builder.Services.AddScoped<OrderItemPictureUrlResolver>();
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {

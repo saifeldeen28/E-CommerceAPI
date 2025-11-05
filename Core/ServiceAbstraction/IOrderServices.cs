@@ -10,5 +10,8 @@ namespace Service
     public interface IOrderServices
     {
         Task<OrderToReturnDto> CreateOrderAsync(OrderDto orderDto, string email);
+        Task<IEnumerable<DeliveryMethodDto>> GetAllDeliveryMethodsAsync();
+        Task<IEnumerable<OrderToReturnDto>> GetAllOrdersAsync(string email);
+        Task<OrderToReturnDto> GetOrderByIdAsync(Guid id);
     }
 }

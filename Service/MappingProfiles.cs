@@ -26,6 +26,16 @@ namespace Service
             CreateMap<BasketItem, BasketItemDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<ShippingAddressDto, ShippingAddress>().ReverseMap();
+            CreateMap<Order, OrderToReturnDto>()
+                .ForMember(dist=>dist.DeliveryMethod,options=>options.MapFrom(src=>src.DeliveryMethod.ShortName))
+                .ForMember(d=>d.Total,o=>o.MapFrom(s=>s.GetTotal())).ReverseMap();
+            CreateMap<OrderItem, OrderItemsDto>()
+                .ForMember(dist => dist.ProductName, options => options.MapFrom(src => src.Product.ProductName))
+                .ForMember(dist => dist.Price, options => options.MapFrom(src => src.Price))
+                .ForMember(dist => dist.ProductId, options => options.MapFrom(src => src.Product.ProductId))
+                .ForMember(d=>d.PictureUrl,o=>o.MapFrom<OrderItemPictureUrlResolver>());
+
+            CreateMap<DeliveryMethod, DeliveryMethodDto>();
         }
     }
 }

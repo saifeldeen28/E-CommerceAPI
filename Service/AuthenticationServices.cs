@@ -27,7 +27,7 @@ namespace Service
                 throw new UserNotFoundException(loginDto.Email);
             var IsVaild = await _userManager.CheckPasswordAsync(user, loginDto.Password);
             if (!IsVaild)
-                throw new Exception("Invalid");
+                throw new UnauthorizedAccessException("Invalid");
             return new UserDto
             {
                 Email = user.Email,
