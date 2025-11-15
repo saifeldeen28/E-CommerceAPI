@@ -1,3 +1,5 @@
+//to run the angular $env:NODE_OPTIONS="--openssl-legacy-provider"; ng serve -o
+
 using DomainLayer.Contracts;
 using DomainLayer.Models;
 using E_CommerceAPI.CustomMiddleWares;
@@ -39,6 +41,8 @@ builder.Services.AddScoped<IServiceManger, ServiceManger>();
 builder.Services.AddTransient<Service.PictureUrlResolver>();
 builder.Services.AddScoped<OrderItemPictureUrlResolver>();
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+builder.Services.AddScoped<ICacheReposatory, CacheReposatory>();
+builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var configuration = builder.Configuration.GetConnectionString("RedisConnection");
@@ -61,6 +65,18 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     };
 });
 builder.Services.AddJWTServices(builder.Configuration);
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+     .AllowAnyHeader()
+     .AllowAnyMethod()
+     
+     .AllowAnyOrigin();
+
+    });
+});
 
 var app = builder.Build();
 var scope = app.Services.CreateScope();
@@ -79,8 +95,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseAuthentication();
 
+
+app.UseAuthentication();
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
