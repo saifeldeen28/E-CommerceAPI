@@ -20,6 +20,14 @@ namespace Service
             var orderAddress = _mapper.Map<ShippingAddressDto,ShippingAddress>(orderDto.Address);
             var basket =await _basketRepository.GetBasketAsync(orderDto.BasketId)
                 ?? throw new BasketNotFoundException(orderDto.BasketId);
+            ArgumentException.ThrowIfNullOrEmpty(basket.PaymentIntentId);
+            var orderRepo= _unitOfWork.GetRepository<Order,Guid>();
+            var orderspec = new OrderWithPaymentIntentSpecification(basket.PaymentIntentId);
+            var existingOrder = await orderRepo.GetByIdAsync(orderspec);
+            if (existingOrder != null)
+            {
+                orderRepo.Remove(existingOrder);
+            }
             List<OrderItem> orderItems = [];
             var ProductRepo = _unitOfWork.GetRepository<Product, int>();
             foreach (var item in basket.Items) 
@@ -28,7 +36,7 @@ namespace Service
                     ?? throw new ProductNotFoundException(item.Id);
 
                 var orderItem = new OrderItem
-                {/////////////////////////////////////////////////////////////////////////////////////////////////////// why no id
+                {
                     Product = new ProductItemOrdered
                     {
                         PictureUrl = product.PictureUrl,
@@ -43,7 +51,7 @@ namespace Service
             var deliveryMethod =await  _unitOfWork.GetRepository<DeliveryMethod, int>().GetByIdAsync(orderDto.DeliveryMethodId)
                 ?? throw new DeliveryMethodNotFoundException(orderDto.DeliveryMethodId);
             var subTotal = orderItems.Sum(i=>i.Quantity*i.Price);
-            var order = new Order (email,orderAddress,deliveryMethod,orderItems,subTotal);
+            var order = new Order (email,orderAddress,deliveryMethod,orderItems,subTotal,basket.PaymentIntentId);
             await _unitOfWork.GetRepository<Order,Guid>().AddAsync(order);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<Order,OrderToReturnDto>(order);

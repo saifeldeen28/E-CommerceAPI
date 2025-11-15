@@ -10,13 +10,14 @@ namespace DomainLayer.Models
     public class Order:BaseEntity<Guid>
     {
         public Order() { }
-        public Order(string userEmail, ShippingAddress address, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal)
+        public Order(string userEmail, ShippingAddress address, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal, string paymentIntentId="")
         {
             UserEmail = userEmail;
             Address = address;
             DeliveryMethod = deliveryMethod;
             Items = items;
             SubTotal = subTotal;
+            PaymentIntentId = paymentIntentId;
         }
 
         public string UserEmail { get; set; } = null!;
@@ -27,6 +28,7 @@ namespace DomainLayer.Models
         public int DeliveryMethodId { get; set; }
         public ICollection<OrderItem> Items { get; set; } = [];
         public decimal SubTotal {  get; set; }
+        public string PaymentIntentId { get; set; } 
         public decimal GetTotal()
             => SubTotal+DeliveryMethod.Price;
 

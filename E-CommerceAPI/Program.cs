@@ -43,6 +43,7 @@ builder.Services.AddScoped<OrderItemPictureUrlResolver>();
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddScoped<ICacheReposatory, CacheReposatory>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var configuration = builder.Configuration.GetConnectionString("RedisConnection");

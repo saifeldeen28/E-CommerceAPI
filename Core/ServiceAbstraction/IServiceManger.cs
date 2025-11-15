@@ -9,5 +9,6 @@ namespace ServiceAbstraction
         public IBasketServices BasketService { get; }
         public IAuthenticationServices AuthenticationService { get; }
         public IOrderServices OrderService { get; }
+        public IPaymentService PaymentService { get; }
     }
 }
