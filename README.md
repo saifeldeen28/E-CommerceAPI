@@ -63,10 +63,12 @@ Once the application is running, you can explore the endpoints via Swagger UI:
 URL: https://localhost:5001/swagger/index.html
 
 📂 Project Structure
-├── E-Commerce.Core          # Entities, Interfaces, Specifications
-├── E-Commerce.Repository    # Data Context, Migrations, Repository Implementations
-├── E-Commerce.Service       # Business Logic, Services
-└── E-Commerce.API           # Controllers, DTOs, Middleware, Extensions
+Layer,Responsibility,Key Components
+📂 E-Commerce.Core,Domain Layer,"Entities, Interfaces, Specifications"
+📂 E-Commerce.Repository,Data Access Layer,"Data Context, Migrations, Repositories"
+📂 E-Commerce.Service,Business Logic Layer,"Application Services, Business Logic"
+🚀 E-Commerce.API,Presentation Layer,"Controllers, DTOs, Middleware, Extensions"
+
 🔐 Authentication
 To access protected endpoints:
 
